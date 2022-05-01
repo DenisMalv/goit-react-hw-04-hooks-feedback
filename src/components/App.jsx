@@ -5,47 +5,43 @@ import FeedbackOptions from './Section/FeedbackOptions/FeedbackOptions';
 import Statistics from './Section/Statistics/Statistics';
 
 const App = () => {
-  const [feedbackOption, setFeedbackOption] = useState({
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  });
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  const countTotalFeedback = () => {
-    return Object.values(feedbackOption).reduce(
-      (total, currentItem) => total + currentItem,
-      0
-    );
-  };
+  const total = good + neutral + bad;
+
   const countPositiveFeedbackPercentage = () => {
-    const total = countTotalFeedback();
-    return Math.round((feedbackOption.good / total) * 100);
+    return Math.round((good / total) * 100);
   };
 
   const handleButton = event => {
-    setFeedbackOption(prevState => ({
-      ...prevState,
-      [event.target.textContent.toLowerCase()]:
-        prevState[event.target.textContent.toLowerCase()] + 1,
-    }));
-
-    console.log(feedbackOption);
+    // eslint-disable-next-line default-case
+    switch (event.target.textContent.toLowerCase()) {
+      case 'good':
+        setGood(prevGood => prevGood + 1);
+        break;
+      case 'neutral':
+        setNeutral(prevNeutral => prevNeutral + 1);
+        break;
+      case 'bad':
+        setBad(prevBad => prevBad + 1);
+        break;
+    }
   };
-
-  const { good, neutral, bad } = feedbackOption;
 
   return (
     <>
       <Section title="Please leave Feedback">
         <FeedbackOptions
-          options={Object.keys(feedbackOption)}
+          options={['good', 'neutral', 'bad']}
           onLeaveFeedback={handleButton}
         />
         <Statistics
           good={good}
           neutral={neutral}
           bad={bad}
-          total={countTotalFeedback()}
+          total={total}
           positivePercentage={countPositiveFeedbackPercentage()}
         />
       </Section>
